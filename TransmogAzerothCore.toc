@@ -1,0 +1,24 @@
+## Interface: 30300
+## Author: GetLocalPlayer, Lleguito
+## Title: Transmog AzerothCore
+## Notes: Wardrobe + transmog collection for private servers | Original DressMe by GetLocalPlayer | Modified by Lleguito | Includes TransmogTip
+## Notes-esES: Vestidor + coleccion transmog para servidores privados | Original DressMe: GetLocalPlayer | Modificado por Lleguito | Incluye TransmogTip
+## Notes-esMX: Vestidor + coleccion transmog para servidores privados | Original DressMe: GetLocalPlayer | Modificado por Lleguito | Incluye TransmogTip
+## X-Credits: Original GetLocalPlayer (DressMe) - https://github.com/GetLocalPlayer/DressMe | Modified by Lleguito - https://github.com/LleguitoWoW | TransmogTip integrated
+## X-Original-Author: GetLocalPlayer
+## X-Modified-By: Lleguito
+## SavedVariables: TransmogACSettings, TransmogACSavedLooks, TransmogTipList
+## Version: 1.3.0
+
+QueryItem.lua
+WowheadURL.lua
+
+db\UnlockedAppearances.lua
+db\Items.lua
+db\PreviewSetup.lua
+DressingRoom.lua
+PreviewList.lua
+ListFrame.lua
+Locale.lua
+TransmogTip.lua
+TransmogAzerothCore.lua
