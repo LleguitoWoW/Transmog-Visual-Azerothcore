@@ -1,7 +1,8 @@
 local addon, ns = ...
 
 -- TransmogTip integrado: tooltips "New Appearance" + lista de desbloqueados
--- Basado en transmogTip (coleccion por equipo + TRANSMOG_SYNC)
+-- Basado en transmogTip by ZhengPeiRu21 - https://github.com/ZhengPeiRu21/transmog-addons
+-- (coleccion por equipo + TRANSMOG_SYNC)
 
 TransmogTipList = TransmogTipList or {}
 

@@ -189,9 +189,3 @@ TransmogAzerothCore/
 ## Version
 
 **1.3.0** — Interface 30300 (WotLK 3.3.5)
-
-## Imagenes
-
-<img width="1366" height="715" alt="WoWScrnShot_091826_171818" src="https://github.com/user-attachments/assets/33dd3193-4a78-4248-95e5-71e209edfa89" />
-<img width="1366" height="715" alt="WoWScrnShot_091826_171758" src="https://github.com/user-attachments/assets/d2fa2829-7640-477a-b0e8-57962f10f0e3" />
-

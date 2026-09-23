@@ -5,7 +5,20 @@ local locales = {}
 locales.en = {
     TABS_PREVIEW = "Items Preview",
     TABS_APPEARANCES = "Appearances",
+    TABS_MOUNTS = "Mounts",
+    TABS_PETS = "Pets",
     TABS_SETTINGS = "Settings",
+    COMPANIONS_EMPTY_MOUNT = "No mounts learned yet.",
+    COMPANIONS_EMPTY_PET = "No pets learned yet.",
+    COMPANIONS_COUNT = "%d learned",
+    COMPANIONS_SUMMON = "Click to summon / dismiss",
+    COMPANIONS_SUMMONED = "Active",
+    COMPANIONS_PREVIEW = "Click: preview  |  Double-click: summon / dismiss",
+    COMPANIONS_PROGRESS = "%d / %d",
+    COMPANIONS_LOCKED = "Not learned.",
+
+
+
     RESET = "Reset",
     UNDRESS = "Undress",
     USE_TARGET = "Use Target",
@@ -32,7 +45,7 @@ locales.en = {
     SHOW_BTN_TIP3 = "The addon can still be accessed via \"/transmog\".",
     LANGUAGE = "Language:",
     LANGUAGE_TIP = "Interface language (English / Español).",
-    CREDITS = "|cff888888Original:|r |cffffffffGetLocalPlayer|r\n|cff6666ccgithub.com/GetLocalPlayer/DressMe|r\n|cff888888Modified by:|r |cffffffffLleguito|r\n|cff6666ccgithub.com/LleguitoWoW|r",
+    CREDITS = "|cff888888Original (DressMe):|r |cffffffffGetLocalPlayer|r\n|cff6666ccgithub.com/GetLocalPlayer/DressMe|r\n|cff888888TransmogTip:|r |cffffffffZhengPeiRu21|r\n|cff6666ccgithub.com/ZhengPeiRu21/transmog-addons|r\n|cff888888Modified by:|r |cffffffffLleguito|r\n|cff6666ccgithub.com/LleguitoWoW|r",
     BY_AUTHOR = "|cff888888By Lleguito|r",
     TITLE_MAIN = "Transmog AzerothCore",
     TITLE_SUB = "",
@@ -62,7 +75,20 @@ locales.en = {
 locales.es = {
     TABS_PREVIEW = "Vista previa",
     TABS_APPEARANCES = "Apariencias",
+    TABS_MOUNTS = "Monturas",
+    TABS_PETS = "Mascotas",
     TABS_SETTINGS = "Ajustes",
+    COMPANIONS_EMPTY_MOUNT = "Aun no tienes monturas aprendidas.",
+    COMPANIONS_EMPTY_PET = "Aun no tienes mascotas aprendidas.",
+    COMPANIONS_COUNT = "%d aprendidas",
+    COMPANIONS_SUMMON = "Clic para invocar / retirar",
+    COMPANIONS_SUMMONED = "Activa",
+    COMPANIONS_PREVIEW = "Clic: vista previa  |  Doble clic: invocar / retirar",
+    COMPANIONS_PROGRESS = "%d / %d",
+    COMPANIONS_LOCKED = "No aprendida.",
+
+
+
     RESET = "Reiniciar",
     UNDRESS = "Desvestir",
     USE_TARGET = "Usar objetivo",
@@ -89,7 +115,7 @@ locales.es = {
     SHOW_BTN_TIP3 = "El addon sigue accesible con \"/transmog\".",
     LANGUAGE = "Idioma:",
     LANGUAGE_TIP = "Idioma de la interfaz (English / Español).",
-    CREDITS = "|cff888888Original:|r |cffffffffGetLocalPlayer|r\n|cff6666ccgithub.com/GetLocalPlayer/DressMe|r\n|cff888888Modificado por:|r |cffffffffLleguito|r\n|cff6666ccgithub.com/LleguitoWoW|r",
+    CREDITS = "|cff888888Original (DressMe):|r |cffffffffGetLocalPlayer|r\n|cff6666ccgithub.com/GetLocalPlayer/DressMe|r\n|cff888888TransmogTip:|r |cffffffffZhengPeiRu21|r\n|cff6666ccgithub.com/ZhengPeiRu21/transmog-addons|r\n|cff888888Modificado por:|r |cffffffffLleguito|r\n|cff6666ccgithub.com/LleguitoWoW|r",
     BY_AUTHOR = "|cff888888By Lleguito|r",
     TITLE_MAIN = "Transmog AzerothCore",
     TITLE_SUB = "",

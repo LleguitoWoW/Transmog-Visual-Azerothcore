@@ -138,8 +138,8 @@ local mainFrame = CreateFrame("Frame", addon, UIParent)
 -- <hackerman noises>
 table.insert(UISpecialFrames, mainFrame:GetName())
 do 
-    mainFrame:SetWidth(1045)
-    mainFrame:SetHeight(505)
+    mainFrame:SetWidth(1180)
+    mainFrame:SetHeight(580)
     mainFrame:SetPoint("CENTER")
     mainFrame:Hide()
     mainFrame:SetMovable(true)
@@ -311,7 +311,7 @@ mainFrame.dressingRoom = ns:CreateDressingRoom(nil, mainFrame)
 do
     local dressingRoom = mainFrame.dressingRoom
     dressingRoom:SetPoint("TOPLEFT", 10, -74)
-    dressingRoom:SetSize(400, 400)
+    dressingRoom:SetSize(400, 460)
     dressingRoom:SetBackdrop(backdrop)
     dressingRoom:SetBackdropColor(unpack(defaultSettings.dressingRoomBackgroundColor))
 
@@ -361,6 +361,7 @@ mainFrame.buttons.useTarget = CreateFrame("Button", "$parentButtonUseTarget", ma
 do
     local btn = mainFrame.buttons.useTarget
     btn:SetPoint("TOPRIGHT", mainFrame.buttons.undress, "TOPLEFT")
+    btn:SetPoint("BOTTOMRIGHT", mainFrame.buttons.undress, "BOTTOMLEFT")
     btn:SetWidth(mainFrame.buttons.undress:GetWidth())
     btn:SetText(L("USE_TARGET"))
     btn:SetScript("OnClick", function()
@@ -382,7 +383,7 @@ end
 ---------------- TABS ----------------
 
 local function GetTabNames()
-    return { L("TABS_PREVIEW"), L("TABS_APPEARANCES"), L("TABS_SETTINGS") }
+    return { L("TABS_PREVIEW"), L("TABS_APPEARANCES"), L("TABS_MOUNTS"), L("TABS_PETS"), L("TABS_SETTINGS") }
 end
 
 mainFrame.tabs = {}
@@ -408,15 +409,15 @@ do
         btn:SetText(TAB_NAMES[i])
         btn:SetID(i)
         if i == 1 then
-            btn:SetPoint("BOTTOMLEFT", btn:GetParent(), "TOPLEFT", 410, -70)
+            btn:SetPoint("BOTTOMLEFT", btn:GetParent(), "TOPLEFT", 410, -74)
         else
             btn:SetPoint("LEFT", _G[mainFrame:GetName().."Tab"..(i - 1)], "RIGHT")
         end
         btn:SetScript("OnClick", tab_OnClick)
 
         local frame = CreateFrame("Frame", "$parentTab"..i.."Content", mainFrame)
-        frame:SetPoint("TOPLEFT", 410, -73)
-        frame:SetPoint("BOTTOMRIGHT", -8, 28)
+        frame:SetPoint("TOPLEFT", 410, -78)
+        frame:SetPoint("BOTTOMRIGHT", -10, 32)
         frame:Hide()
         table.insert(tabs, frame)
     end
@@ -426,8 +427,10 @@ do
 
     mainFrame.tabs.preview = tabs[1]
     mainFrame.tabs.appearances = tabs[2]
-    mainFrame.tabs.settings = tabs[3]
-    mainFrame.settingsTab = tabs[3]
+    mainFrame.tabs.mounts = tabs[3]
+    mainFrame.tabs.pets = tabs[4]
+    mainFrame.tabs.settings = tabs[5]
+    mainFrame.settingsTab = tabs[5]
     mainFrame._tabButtons = mainFrame.buttons -- for ApplyLocale
 end
 
@@ -438,13 +441,13 @@ mainFrame.tabs.preview.slider = CreateFrame("Slider", "$parentSlider", mainFrame
 
 do
     local list = mainFrame.tabs.preview.list
-    list:SetPoint("TOPLEFT")
-    list:SetSize(601, 401)
+    list:SetPoint("TOPLEFT", 0, -28)
+    list:SetSize(720, 430)
 
-    local label = list:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    label:SetPoint("TOP", list, "BOTTOM", 0, -5)
+    local label = list:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    label:SetPoint("TOP", list, "BOTTOM", 0, -8)
     label:SetJustifyH("CENTER")
-    label:SetHeight(10)
+    label:SetWidth(200)
 
     local slider = mainFrame.tabs.preview.slider
     slider:SetPoint("TOPRIGHT", -6, -21)
@@ -866,7 +869,7 @@ do
     local bar = CreateFrame("StatusBar", "$parentAppearanceProgress", previewTab)
     bar:SetSize(140, 18)
     -- Se ancla al menu de subclase mas abajo; posicion provisional
-    bar:SetPoint("TOPRIGHT", -255, 40)
+    bar:SetPoint("TOPLEFT", 280, -6) -- provisional; re-anchored next to Mail menu
     bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
     bar:GetStatusBarTexture():SetHorizTile(false)
     bar:SetMinMaxValues(0, 1)
@@ -943,7 +946,7 @@ do
     ns.catalogFilter = "all"
 
     local filterTitle = previewTab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    filterTitle:SetPoint("TOPLEFT", 8, 42)
+    filterTitle:SetPoint("TOPLEFT", 10, -6)
     filterTitle:SetText(L("FILTER_LABEL"))
     filterTitle:SetTextColor(1.0, 0.82, 0.0)
     previewTab._filterTitle = filterTitle
@@ -1032,14 +1035,14 @@ do
         return btn
     end
 
-    local btnAll = MakeFilterPill("FilterAll", 90, L("FILTER_ALL"))
-    btnAll:SetPoint("LEFT", filterTitle, "RIGHT", 8, 0)
+    local btnAll = MakeFilterPill("FilterAll", 80, L("FILTER_ALL"))
+    btnAll:SetPoint("LEFT", filterTitle, "RIGHT", 6, 0)
     btnAll.filterMode = "all"
     btnAll:SetScript("OnClick", function() SetFilterMode("all") PlaySound("gsTitleOptionOK") end)
     previewTab._btnFilterAll = btnAll
 
-    local btnUnl = MakeFilterPill("FilterUnlocked", 120, L("FILTER_UNLOCKED"))
-    btnUnl:SetPoint("LEFT", btnAll, "RIGHT", 6, 0)
+    local btnUnl = MakeFilterPill("FilterUnlocked", 110, L("FILTER_UNLOCKED"))
+    btnUnl:SetPoint("LEFT", btnAll, "RIGHT", 4, 0)
     btnUnl.filterMode = "unlocked"
     btnUnl:SetScript("OnClick", function() SetFilterMode("unlocked") PlaySound("gsTitleOptionOK") end)
     previewTab._btnFilterUnlocked = btnUnl
@@ -1069,15 +1072,19 @@ end
 
 do
     local menu = mainFrame.tabs.preview.subclassMenu
-    menu:SetPoint("TOPRIGHT", -120, 38)
+    local previewTab = mainFrame.tabs.preview
+    -- IZQUIERDA: Show All Unlocked | DERECHA: barra progreso + clase de item (Mail)
+    menu:ClearAllPoints()
+    menu:SetPoint("TOPRIGHT", previewTab, "TOPRIGHT", -36, -2)
     menu.initializers = {} -- init func per slot
     UIDropDownMenu_JustifyText(menu, "LEFT")
+    UIDropDownMenu_SetWidth(menu, 130)
 
-    -- Barra de progreso junto al desplegable de calidad/tipo (Cloth, etc.)
-    if mainFrame.tabs.preview.progressBar then
-        local bar = mainFrame.tabs.preview.progressBar
+    if previewTab.progressBar then
+        local bar = previewTab.progressBar
         bar:ClearAllPoints()
-        bar:SetPoint("RIGHT", menu, "LEFT", 10, 2)
+        bar:SetSize(120, 18)
+        bar:SetPoint("RIGHT", menu, "LEFT", -12, 2)
     end
 
     function menu.Update(self, slotName, subclass)
@@ -1514,6 +1521,475 @@ btnTransmogAC:SetScript("OnClick", function(self)
         mainFrame:Show() 
     end
 end)
+
+
+---------------- COMPANIONS (Mounts / Pets) ----------------
+-- Catalogo (db/Companions.lua) + aprendidas (API) + filtros All/Unlocked + barra progreso
+do
+    local MAX_ROWS = 11
+    local ROW_H = 28
+
+    local function GetUnlockedMap(companionType)
+        local map = {}
+        local n = GetNumCompanions(companionType) or 0
+        for i = 1, n do
+            local creatureID, creatureName, creatureSpellID, icon, issummoned = GetCompanionInfo(companionType, i)
+            if creatureSpellID then
+                map[creatureSpellID] = {
+                    index = i,
+                    id = creatureID,
+                    name = creatureName,
+                    spellId = creatureSpellID,
+                    icon = icon,
+                    summoned = issummoned and true or false,
+                    unlocked = true,
+                }
+            end
+        end
+        return map
+    end
+
+    local function BuildDisplayList(companionType, filterMode)
+        local unlockedMap = GetUnlockedMap(companionType)
+        local catalog = (ns.CompanionCatalog and ns.CompanionCatalog[companionType]) or {}
+        local list = {}
+        local seen = {}
+        local unlockedCount = 0
+        for _ in pairs(unlockedMap) do unlockedCount = unlockedCount + 1 end
+
+        for _, entry in ipairs(catalog) do
+            local spellId = entry.spellId
+            if spellId then
+                seen[spellId] = true
+                local u = unlockedMap[spellId]
+                local item = {
+                    spellId = spellId,
+                    name = (u and u.name) or entry.name or ("#" .. tostring(spellId)),
+                    id = (u and u.id) or entry.creatureId,
+                    icon = (u and u.icon) or entry.icon or "Interface\\Icons\\Trade_Engineering",
+                    index = u and u.index or nil,
+                    unlocked = u ~= nil,
+                    summoned = u and u.summoned or false,
+                }
+                if filterMode ~= "unlocked" or item.unlocked then
+                    list[#list + 1] = item
+                end
+            end
+        end
+
+        -- Aprendidas que no estan en el catalogo (custom del server)
+        for spellId, u in pairs(unlockedMap) do
+            if not seen[spellId] then
+                list[#list + 1] = {
+                    spellId = spellId,
+                    name = u.name,
+                    id = u.id,
+                    icon = u.icon,
+                    index = u.index,
+                    unlocked = true,
+                    summoned = u.summoned,
+                }
+            end
+        end
+
+        table.sort(list, function(a, b)
+            if a.unlocked ~= b.unlocked then return a.unlocked end
+            return (a.name or "") < (b.name or "")
+        end)
+
+        local totalCount = #catalog
+        for spellId, _ in pairs(unlockedMap) do
+            if not seen[spellId] then totalCount = totalCount + 1 end
+        end
+        if totalCount < unlockedCount then totalCount = unlockedCount end
+
+        return list, unlockedCount, totalCount
+    end
+
+    local function BuildCompanionTab(tab, companionType, emptyKey, titleKey)
+        if not tab then return end
+
+        tab._filterMode = "all"
+        tab._companionType = companionType
+        tab._titleKey = titleKey
+        tab._emptyKey = emptyKey
+
+        local title = tab:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        title:SetPoint("TOPLEFT", 12, -6)
+        title:SetTextColor(1.0, 0.82, 0.0)
+        title:SetText(L(titleKey))
+        tab._title = title
+
+        -- Filtros (como items)
+        local filterTitle = tab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        filterTitle:SetPoint("LEFT", title, "RIGHT", 16, 0)
+        filterTitle:SetTextColor(1.0, 0.82, 0.0)
+        filterTitle:SetText(L("FILTER_LABEL"))
+        tab._filterTitle = filterTitle
+
+        local pillBackdrop = {
+            bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true, tileSize = 12, edgeSize = 12,
+            insets = { left = 2, right = 2, top = 2, bottom = 2 },
+        }
+        local function StylePill(btn, active)
+            if active then
+                btn:SetBackdropColor(0.35, 0.28, 0.08, 1)
+                btn:SetBackdropBorderColor(1.0, 0.82, 0.20, 1)
+                if btn.label then btn.label:SetTextColor(1.0, 0.90, 0.40) end
+            else
+                btn:SetBackdropColor(0.10, 0.11, 0.13, 1)
+                btn:SetBackdropBorderColor(0.40, 0.38, 0.32, 1)
+                if btn.label then btn.label:SetTextColor(0.75, 0.75, 0.75) end
+            end
+        end
+        local function MakePill(text)
+            local btn = CreateFrame("Button", nil, tab)
+            btn:SetSize(80, 20)
+            btn:SetBackdrop(pillBackdrop)
+            btn.label = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            btn.label:SetPoint("CENTER")
+            btn.label:SetText(text)
+            return btn
+        end
+        local btnAll = MakePill(L("FILTER_ALL"))
+        btnAll:SetPoint("LEFT", filterTitle, "RIGHT", 6, 0)
+        local btnUnl = MakePill(L("FILTER_UNLOCKED"))
+        btnUnl:SetWidth(100)
+        btnUnl:SetPoint("LEFT", btnAll, "RIGHT", 4, 0)
+        tab._btnAll = btnAll
+        tab._btnUnl = btnUnl
+        StylePill(btnAll, true)
+        StylePill(btnUnl, false)
+
+        -- Barra de progreso (derecha)
+        local bar = CreateFrame("StatusBar", nil, tab)
+        bar:SetSize(140, 16)
+        bar:SetPoint("TOPRIGHT", -16, -8)
+        bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        bar:SetMinMaxValues(0, 1)
+        bar:SetValue(0)
+        bar:SetStatusBarColor(0.2, 0.75, 0.3, 1)
+        local barBg = bar:CreateTexture(nil, "BACKGROUND")
+        barBg:SetAllPoints()
+        barBg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        barBg:SetVertexColor(0.15, 0.15, 0.15, 0.9)
+        local barText = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        barText:SetPoint("CENTER")
+        barText:SetText("0 / 0")
+        bar.text = barText
+        tab._progressBar = bar
+
+        local tip = tab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        tip:SetPoint("TOPLEFT", 12, -28)
+        tip:SetTextColor(0.55, 0.55, 0.55)
+        tip:SetText(L("COMPANIONS_PREVIEW") or L("COMPANIONS_SUMMON"))
+        tab._tip = tip
+
+        -- Visor 3D
+        local modelBg = CreateFrame("Frame", nil, tab)
+        modelBg:SetPoint("TOPLEFT", 8, -44)
+        modelBg:SetPoint("BOTTOMLEFT", 8, 14)
+        modelBg:SetWidth(280)
+        modelBg:SetBackdrop({
+            bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true, tileSize = 16, edgeSize = 16,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        })
+        modelBg:SetBackdropColor(0.04, 0.04, 0.06, 1)
+        modelBg:SetBackdropBorderColor(0.4, 0.38, 0.32, 1)
+
+        local model = CreateFrame("PlayerModel", nil, modelBg)
+        model:SetPoint("TOPLEFT", 6, -6)
+        model:SetPoint("BOTTOMRIGHT", -6, 6)
+        model:SetUnit("player")
+        model:SetFacing(0.4)
+        tab._model = model
+
+        local modelName = modelBg:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        modelName:SetPoint("BOTTOM", modelBg, "BOTTOM", 0, 8)
+        modelName:SetTextColor(1, 0.82, 0.2)
+        tab._modelName = modelName
+
+        model:EnableMouse(true)
+        model:SetScript("OnMouseDown", function(self, button)
+            if button == "LeftButton" then
+                self._dragging = true
+                self._dragX = GetCursorPosition()
+            end
+        end)
+        model:SetScript("OnMouseUp", function(self) self._dragging = false end)
+        model:SetScript("OnUpdate", function(self)
+            if self._dragging then
+                local x = GetCursorPosition()
+                local dx = (x - (self._dragX or x)) * 0.01
+                self._dragX = x
+                self:SetFacing((self:GetFacing() or 0) + dx)
+            end
+        end)
+
+        local function ShowCreature(creatureID, name)
+            if creatureID and creatureID > 0 then
+                model:ClearModel()
+                model:SetCreature(creatureID)
+                model:SetPosition(0, 0, -0.15)
+                model:SetFacing(0.5)
+                modelName:SetText(name or "")
+            else
+                model:ClearModel()
+                modelName:SetText(name or "")
+            end
+        end
+
+        -- Lista
+        local bg = CreateFrame("Frame", nil, tab)
+        bg:SetPoint("TOPLEFT", modelBg, "TOPRIGHT", 6, 0)
+        bg:SetPoint("BOTTOMRIGHT", -10, 14)
+        bg:SetBackdrop({
+            bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true, tileSize = 16, edgeSize = 16,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        })
+        bg:SetBackdropColor(0.05, 0.05, 0.07, 1)
+        bg:SetBackdropBorderColor(0.4, 0.38, 0.32, 1)
+
+        local slider = CreateFrame("Slider", nil, bg, "UIPanelScrollBarTemplate")
+        slider:SetWidth(16)
+        slider:SetPoint("TOPRIGHT", bg, "TOPRIGHT", -10, -24)
+        slider:SetPoint("BOTTOMRIGHT", bg, "BOTTOMRIGHT", -10, 24)
+        slider:SetMinMaxValues(0, 0)
+        slider:SetValueStep(1)
+        slider:SetValue(0)
+        slider:SetScale(0.85)
+        tab._slider = slider
+        tab._offset = 0
+        tab._list = {}
+        tab._rows = {}
+        tab._selectedSpell = nil
+
+        local function UpdateProgress(unlockedCount, totalCount)
+            if totalCount <= 0 then
+                bar:SetMinMaxValues(0, 1)
+                bar:SetValue(0)
+                bar.text:SetText("0 / 0")
+                bar:SetStatusBarColor(0.4, 0.4, 0.4, 1)
+                return
+            end
+            bar:SetMinMaxValues(0, totalCount)
+            bar:SetValue(unlockedCount)
+            local fmt = L("COMPANIONS_PROGRESS") or "%d / %d"
+            bar.text:SetText(fmt:format(unlockedCount, totalCount))
+            local ratio = unlockedCount / totalCount
+            if ratio >= 1 then
+                bar:SetStatusBarColor(0.15, 0.85, 0.25, 1)
+            elseif ratio >= 0.5 then
+                bar:SetStatusBarColor(0.25, 0.7, 0.35, 1)
+            elseif ratio > 0 then
+                bar:SetStatusBarColor(0.9, 0.7, 0.15, 1)
+            else
+                bar:SetStatusBarColor(0.7, 0.2, 0.2, 1)
+            end
+        end
+
+        local function RefreshList()
+            local list, unlockedCount, totalCount = BuildDisplayList(companionType, tab._filterMode)
+            tab._list = list
+            tab._unlockedCount = unlockedCount
+            tab._totalCount = totalCount
+            local maxOff = math.max(0, #list - MAX_ROWS)
+            if tab._offset > maxOff then tab._offset = maxOff end
+            slider:SetMinMaxValues(0, maxOff)
+            slider:SetValue(tab._offset)
+            if maxOff > 0 then slider:Show() else slider:Hide() end
+            UpdateProgress(unlockedCount, totalCount)
+            title:SetText(L(titleKey))
+            tip:SetText(L("COMPANIONS_PREVIEW") or L("COMPANIONS_SUMMON"))
+            filterTitle:SetText(L("FILTER_LABEL"))
+            if btnAll.label then btnAll.label:SetText(L("FILTER_ALL")) end
+            if btnUnl.label then btnUnl.label:SetText(L("FILTER_UNLOCKED")) end
+        end
+
+        local function Paint()
+            local list = tab._list or {}
+            local off = tab._offset or 0
+            if #list == 0 then
+                if not tab._emptyFS then
+                    tab._emptyFS = bg:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                    tab._emptyFS:SetPoint("CENTER")
+                    tab._emptyFS:SetTextColor(0.6, 0.6, 0.6)
+                end
+                tab._emptyFS:SetText(L(emptyKey))
+                tab._emptyFS:Show()
+            elseif tab._emptyFS then
+                tab._emptyFS:Hide()
+            end
+            for i = 1, MAX_ROWS do
+                local row = tab._rows[i]
+                local data = list[off + i]
+                if data then
+                    row:Show()
+                    row.data = data
+                    if row.icon then
+                        row.icon:SetTexture(data.icon)
+                        if data.unlocked then
+                            row.icon:SetVertexColor(1, 1, 1)
+                        else
+                            row.icon:SetVertexColor(0.4, 0.4, 0.4)
+                        end
+                    end
+                    row.nameFS:SetText(data.name or "?")
+                    local selected = tab._selectedSpell == data.spellId
+                    if data.summoned then
+                        row.nameFS:SetTextColor(0.3, 0.9, 0.3)
+                        row.statusFS:SetText(L("COMPANIONS_SUMMONED"))
+                        row.statusFS:SetTextColor(0.3, 0.9, 0.3)
+                        row:SetBackdropBorderColor(0.3, 0.75, 0.3, 1)
+                    elseif selected then
+                        row.nameFS:SetTextColor(1.0, 0.82, 0.2)
+                        row.statusFS:SetText(data.unlocked and "" or "!")
+                        row:SetBackdropBorderColor(1.0, 0.82, 0.2, 1)
+                    elseif data.unlocked then
+                        row.nameFS:SetTextColor(1, 1, 1)
+                        row.statusFS:SetText("")
+                        row:SetBackdropBorderColor(0.35, 0.35, 0.35, 1)
+                    else
+                        row.nameFS:SetTextColor(0.45, 0.45, 0.45)
+                        row.statusFS:SetText("")
+                        row:SetBackdropBorderColor(0.25, 0.25, 0.25, 1)
+                    end
+                else
+                    row:Hide()
+                    row.data = nil
+                end
+            end
+        end
+
+        local function SetFilter(mode)
+            if mode ~= "unlocked" then mode = "all" end
+            tab._filterMode = mode
+            StylePill(btnAll, mode == "all")
+            StylePill(btnUnl, mode == "unlocked")
+            tab._offset = 0
+            RefreshList()
+            Paint()
+        end
+        btnAll:SetScript("OnClick", function() SetFilter("all") PlaySound("gsTitleOptionOK") end)
+        btnUnl:SetScript("OnClick", function() SetFilter("unlocked") PlaySound("gsTitleOptionOK") end)
+
+        for i = 1, MAX_ROWS do
+            local row = CreateFrame("Button", nil, bg)
+            row:SetHeight(ROW_H)
+            row:SetPoint("TOPLEFT", 8, -8 - (i - 1) * (ROW_H + 2))
+            row:SetPoint("RIGHT", slider, "LEFT", -14, 0)
+            row:SetBackdrop({
+                bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+                edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                tile = true, tileSize = 12, edgeSize = 12,
+                insets = { left = 2, right = 2, top = 2, bottom = 2 },
+            })
+            row:SetBackdropColor(0.10, 0.11, 0.13, 1)
+            row:RegisterForClicks("LeftButtonUp")
+            row._lastClick = 0
+
+            local icon = row:CreateTexture(nil, "ARTWORK")
+            icon:SetSize(22, 22)
+            icon:SetPoint("LEFT", 4, 0)
+            row.icon = icon
+
+            local nameFS = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            nameFS:SetPoint("LEFT", icon, "RIGHT", 8, 0)
+            nameFS:SetPoint("RIGHT", -70, 0)
+            nameFS:SetJustifyH("LEFT")
+            row.nameFS = nameFS
+
+            local statusFS = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            statusFS:SetPoint("RIGHT", -8, 0)
+            row.statusFS = statusFS
+
+            row:SetScript("OnClick", function(self)
+                if not self.data then return end
+                local now = GetTime()
+                local double = (now - (self._lastClick or 0)) < 0.35
+                self._lastClick = now
+                tab._selectedSpell = self.data.spellId
+                if self.data.id and self.data.id > 0 then
+                    ShowCreature(self.data.id, self.data.name)
+                else
+                    ShowCreature(nil, self.data.name)
+                end
+                if double then
+                    if self.data.unlocked and self.data.index then
+                        if self.data.summoned then
+                            DismissCompanion(companionType)
+                        else
+                            CallCompanion(companionType, self.data.index)
+                        end
+                        tab:SetScript("OnUpdate", function(self, elapsed)
+                            self._wait = (self._wait or 0) + elapsed
+                            if self._wait > 0.2 then
+                                self._wait = 0
+                                self:SetScript("OnUpdate", nil)
+                                RefreshList()
+                                Paint()
+                            end
+                        end)
+                    else
+                        DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[Transmog AC]|r " .. (L("COMPANIONS_LOCKED") or "Not learned."))
+                    end
+                end
+                Paint()
+                PlaySound("gsTitleOptionOK")
+            end)
+            row:SetScript("OnEnter", function(self)
+                if not self.data then return end
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(self.data.name or "?", 1, 0.82, 0)
+                if not self.data.unlocked then
+                    GameTooltip:AddLine(L("COMPANIONS_LOCKED") or "Not learned.", 1, 0.3, 0.3)
+                else
+                    GameTooltip:AddLine(L("COMPANIONS_PREVIEW") or "", 0.5, 0.8, 0.5)
+                end
+                GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+            row:Hide()
+            tab._rows[i] = row
+        end
+
+        slider:SetScript("OnValueChanged", function(self, value)
+            tab._offset = math.floor(value + 0.5)
+            Paint()
+        end)
+
+        tab:SetScript("OnShow", function()
+            RefreshList()
+            Paint()
+            if tab._list and tab._list[1] then
+                local d = tab._list[1]
+                -- Prefer first unlocked
+                for _, x in ipairs(tab._list) do
+                    if x.unlocked then d = x break end
+                end
+                tab._selectedSpell = d.spellId
+                if d.id then ShowCreature(d.id, d.name) end
+                Paint()
+            end
+        end)
+
+        tab.RefreshCompanions = function()
+            RefreshList()
+            Paint()
+        end
+    end
+
+    BuildCompanionTab(mainFrame.tabs.mounts, "MOUNT", "COMPANIONS_EMPTY_MOUNT", "TABS_MOUNTS")
+    BuildCompanionTab(mainFrame.tabs.pets, "CRITTER", "COMPANIONS_EMPTY_PET", "TABS_PETS")
+end
+
 
 ---------------- SETTINGS TAB ----------------
 
