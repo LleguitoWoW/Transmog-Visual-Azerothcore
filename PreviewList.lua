@@ -233,7 +233,7 @@ function ns:CreatePreviewList(parent)
                             preview.modelFacing = nil
                             preview.button:Show()
                             -- Estado desbloqueado / bloqueado
-                            local unlocked = true
+                            local unlocked = false
                             if ns.IsAnyIdUnlocked and type(preview.appereanceData) == "table" then
                                 unlocked = ns.IsAnyIdUnlocked(preview.appereanceData[1])
                             end

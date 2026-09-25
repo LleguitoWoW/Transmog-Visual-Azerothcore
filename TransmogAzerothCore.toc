@@ -7,8 +7,8 @@
 ## X-Credits: DressMe: GetLocalPlayer - https://github.com/GetLocalPlayer/DressMe | TransmogTip: ZhengPeiRu21 - https://github.com/ZhengPeiRu21/transmog-addons | Modified by Lleguito - https://github.com/LleguitoWoW
 ## X-Original-Author: GetLocalPlayer
 ## X-Modified-By: Lleguito
-## SavedVariables: TransmogACSettings, TransmogACSavedLooks, TransmogTipList
-## Version: 1.5.0
+## SavedVariables: TransmogACSettings, TransmogACSavedLooks, TransmogTipDB
+## Version: 1.5.2
 
 QueryItem.lua
 WowheadURL.lua

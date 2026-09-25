@@ -70,13 +70,45 @@ tipFrame:RegisterEvent("PLAYER_LOGIN")
 tipFrame:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == addon then
+            TransmogTipDB = TransmogTipDB or {}
             TransmogTipList = TransmogTipList or {}
         end
     elseif event == "PLAYER_LOGIN" then
-        -- Fusionar lista tip -> desbloqueados del vestidor
-        if ns.MergeUnlockTable then
-            ns.MergeUnlockTable(TransmogTipList)
+        local realm = GetRealmName() or "unknown"
+        local name = UnitName("player") or "unknown"
+        local key = realm .. "::" .. name
+
+        -- 1) Borrar coleccion en memoria (evita ver items de otra cuenta)
+        if ns.ClearUnlockedAppearances then
+            ns.ClearUnlockedAppearances()
+        elseif type(ns.UnlockedAppearances) == "table" then
+            if wipe then wipe(ns.UnlockedAppearances) else ns.UnlockedAppearances = {} end
         end
+
+        -- 2) Cache tip solo de este personaje
+        TransmogTipDB = TransmogTipDB or {}
+        TransmogTipList = TransmogTipDB[key]
+        if type(TransmogTipList) ~= "table" then
+            TransmogTipList = {}
+            TransmogTipDB[key] = TransmogTipList
+        end
+
+        -- 3) No mezclar tip de otro pj hasta que llegue sync del server
+        -- (el tip local solo anade lo equipado en esta sesion)
+
+        -- 4) Pedir coleccion al servidor (cuenta actual)
+        self.elapsed = 0
+        self:SetScript("OnUpdate", function(frame, elapsed)
+            frame.elapsed = frame.elapsed + elapsed
+            if frame.elapsed < 2.0 then return end
+            frame:SetScript("OnUpdate", nil)
+            -- Comando de mod-transmog: rellena TRANSMOG_SYNC:id en system chat
+            local editBox = ChatFrame1EditBox or (DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.editBox)
+            if editBox then
+                editBox:SetText(".transmog sync")
+                ChatEdit_SendText(editBox, 0)
+            end
+        end)
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
         local itemID = GetInventoryItemID("player", arg1)
         if itemID then

@@ -175354,16 +175354,11 @@ function ns.GetSubclassAppearanceCounts(slot, subclass)
     end
     local total = 0
     local unlocked = 0
-    local hasUnlockData = ns.IsAnyIdUnlocked and next(ns.UnlockedAppearances or {})
     for _, data in pairs(raw) do
         total = total + 1
-        if not hasUnlockData then
+        local ids = data[1]
+        if ns.IsAnyIdUnlocked and ns.IsAnyIdUnlocked(ids) then
             unlocked = unlocked + 1
-        else
-            local ids = data[1]
-            if ns.IsAnyIdUnlocked(ids) then
-                unlocked = unlocked + 1
-            end
         end
     end
     return unlocked, total
